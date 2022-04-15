@@ -1,0 +1,20 @@
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: hello-tanzu
+  labels:
+    app.tanzu.vmware.com/workload-type: web
+spec:
+  serviceAccountName: cartographer-example-workload-sa
+  source:
+    git:
+      url: https://github.com/ciberkleid/hello-go
+      ref:
+        branch: main
+  build:
+    env:
+      - name: CGO_ENABLED
+        value: "0"
+  env:
+    - name: HELLO_MSG
+      value: "Tanzu"
