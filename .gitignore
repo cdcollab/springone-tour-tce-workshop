@@ -1,2 +1,4 @@
-example-values.yaml
 .envrc
+install-values.yaml
+example-values.yaml
+
