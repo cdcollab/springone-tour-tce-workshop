@@ -25,15 +25,15 @@ kp clusterbuilder save builder \
     --order example/kpack-builder-cfg/kpack-builder-order.yaml
 
 ###### APP OPERATOR PERSPECTIVE
-envsubst < example-values-REDACTED.yaml > example-values.yaml
+envsubst < values-example-REDACTED.yaml > values-example.yaml
 
 # Cartographer access control configuration:
 kapp deploy --yes -a example-rbac \
-    -f <(ytt --ignore-unknown-comments -f example/cluster/ -f example-values.yaml)
+    -f <(ytt --ignore-unknown-comments -f example/cluster/ -f values-example.yaml)
 
 # Create templates and supply chain
 kapp deploy --yes -a example-sc \
-    -f <(ytt --ignore-unknown-comments -f example/app-operator/ -f example-values.yaml)
+    -f <(ytt --ignore-unknown-comments -f example/app-operator/ -f values-example.yaml)
 
 ###### DEVELOPER PERSPECTIVE
 # Apply workload
