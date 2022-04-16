@@ -1,8 +1,7 @@
 #@data/values
 ---
-service_account_name: cartographer-example-workload-sa
-image_prefix: harbor.tanzu.coraiberkleid.site/demo/
+image_prefix: $IMAGE_PREFIX
 registry:
-  server: https://index.docker.io/v1/
-  username: [REGISTRY_USERNAME]
-  password: [REGISTRY_PASSWORD]
+  server: $REGISTRY_URL
+  username: $REGISTRY_USERNAME
+  password: $REGISTRY_PASSWORD

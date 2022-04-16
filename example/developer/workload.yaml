@@ -5,7 +5,7 @@ metadata:
   labels:
     app.tanzu.vmware.com/workload-type: web
 spec:
-  serviceAccountName: cartographer-example-workload-sa
+  serviceAccountName: example-workload-sa
   source:
     git:
       url: https://github.com/ciberkleid/hello-go
