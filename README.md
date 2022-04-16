@@ -16,14 +16,14 @@ The instructor will provide a unique username and password to each workshop part
 Set the following environment variables for installstion of Application Toolkit
 ```shell
 export KP_REPO=harbor.tanzu.coraiberkleid.site/your-username/kp
-export KP_USERNAME=s1t
+export KP_USERNAME=your-username
 export KP_PASSWORD=your-password
 ```
 
 Set the following environment variables to run the example 
 ```shell
 export REGISTRY_URL=https://harbor.tanzu.coraiberkleid.site
-export REGISTRY_USERNAME=s1t
+export REGISTRY_USERNAME=your-username
 export REGISTRY_PASSWORD=your-password
 export IMAGE_PREFIX=harbor.tanzu.coraiberkleid.site/your-username/
 ```
