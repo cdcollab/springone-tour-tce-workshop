@@ -13,5 +13,6 @@ mv vendir/binaries/kn/kn* vendir/bin/kn
 mv vendir/binaries/kp/kp* vendir/bin/kp
 mv vendir/binaries/kubectl/kubectl* vendir/bin/kubectl
 mv vendir/binaries/yq/yq* vendir/bin/yq
+rm -rf vendir/binaries
 chmod +x vendir/bin/*
 tar -xzvf vendir/binaries-tce/*.tar.gz -C vendir

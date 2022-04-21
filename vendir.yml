@@ -83,15 +83,6 @@ directories:
           #@ else:
           url: #@ "https://dl.k8s.io/release/v" + getFixedVersion("kubectl") + "/bin/" + os + "/" + arch + "/kubectl"
           #@ end
-      - path: standalone
-        http:
-          #@ if os == "darwin":
-          url: #@ "https://storage.googleapis.com/tce-tanzu-cli-plugins/build-tools/standalone/mac/tanzu-standalone"
-          #@ elif os == "linux":
-          url: #@ "https://storage.googleapis.com/tce-tanzu-cli-plugins/build-tools/standalone/linux/tanzu-standalone"
-          #@ else:
-          url: #@ "https://storage.googleapis.com/tce-tanzu-cli-plugins/build-tools/standalone/windows/tanzu-standalone.exe"
-          #@ end
   #! TCE
   - path: vendir/binaries-tce
     contents:
