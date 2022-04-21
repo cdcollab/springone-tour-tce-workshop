@@ -1,4 +1,5 @@
 .envrc
 values-install.yaml
 values-example.yaml
+apps-plugin/
 
