@@ -55,4 +55,4 @@ watch kubectl tree workload hello-tanzu
 kubectl get all
 
 # Make sure app is working:
-http://hello-tanzu.kpack.127-0-0-1.sslip.io
+open http://hello-tanzu.kpack.127-0-0-1.sslip.io
