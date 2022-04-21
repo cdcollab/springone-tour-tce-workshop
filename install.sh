@@ -5,7 +5,7 @@ if [[ -z ${KP_REPO} || -z ${KP_USERNAME} || -z ${KP_PASSWORD} ]]; then
   exit 1
 fi
 
-envsubst < values-install-REDACTED.yaml > values-install.yaml
+envsubst < values-install-template.yaml > values-install.yaml
 
 ##### INSTALL APPLICATION TOOLKIT
 tanzu package install app-toolkit \

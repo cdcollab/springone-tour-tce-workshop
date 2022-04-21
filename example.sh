@@ -25,7 +25,7 @@ kp clusterbuilder save builder \
     --order example/kpack-builder-cfg/kpack-builder-order.yaml
 
 ###### APP OPERATOR PERSPECTIVE
-envsubst < values-example-REDACTED.yaml > values-example.yaml
+envsubst < values-example-template.yaml > values-example.yaml
 
 # Cartographer access control configuration:
 kapp deploy --yes -a example-rbac \

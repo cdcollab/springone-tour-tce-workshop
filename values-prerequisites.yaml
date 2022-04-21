@@ -1,20 +1,3 @@
-contour:
-  envoy:
-    service:
-      type: ClusterIP
-    hostPorts:
-      enable: true
-
-knative_serving:
-  domain:
-    type: real
-    name: 127-0-0-1.sslip.io
-
-kpack:
-  kp_default_repository: $KP_REPO
-  kp_default_repository_username: $KP_USERNAME
-  kp_default_repository_password: $KP_PASSWORD
-
 vendir:
   # For installation of CLI binaries
   host:
