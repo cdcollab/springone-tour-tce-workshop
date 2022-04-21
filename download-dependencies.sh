@@ -8,7 +8,7 @@ ytt -f vendir.yml \
   | vendir sync -f-
 
 # Soft link files for consistency into path
-mkdir vendir/bin
+mkdir -p vendir/bin
 mv vendir/binaries/kn/kn* vendir/bin/kn
 mv vendir/binaries/kp/kp* vendir/bin/kp
 mv vendir/binaries/kubectl/kubectl* vendir/bin/kubectl
