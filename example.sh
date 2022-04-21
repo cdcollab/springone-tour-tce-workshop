@@ -22,7 +22,7 @@ kp clusterbuilder save builder \
     --tag ${IMAGE_PREFIX}builder \
     --stack base \
     --store default \
-    --order example/kpack-builder-cfg/kpack-builder-order.yaml
+    --order example/kpack-builder-order.yaml
 
 ###### APP OPERATOR PERSPECTIVE
 envsubst < values-example-template.yaml > values-example.yaml
