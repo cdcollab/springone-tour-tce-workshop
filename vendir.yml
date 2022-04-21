@@ -1,0 +1,106 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:struct", "struct")
+
+#@ def getFixedVersion(key):
+#@   versions = struct.decode(data.values.vendir.versions)
+#@   return versions[key]
+#@ end
+
+#! For more info on setting semver constraints, see:
+#!   https://carvel.dev/vendir/docs/latest/versions
+#!   https://github.com/blang/semver#ranges
+#@ def getVersion(key):
+#@   if data.values.vendir.getLatest:
+#@     return ">0.0.0"
+#@   else:
+#@     return getFixedVersion(key)
+#@   end
+#@ end
+
+#@ os = data.values.vendir.host.os or "darwin"
+#@ arch = data.values.vendir.host.arch or "amd64"
+---
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.8.0
+directories:
+  #! Product release files
+  - path: vendir/kpack
+    contents:
+      - path: .
+        githubRelease:
+          slug: pivotal/kpack
+          tagSelection:
+            semver:
+              constraints: #@ getVersion("kp")
+          assetNames:
+            - #@ "release-*.yaml"
+          disableAutoChecksumValidation: true
+  #! Binaries
+  - path: vendir/binaries
+    contents:
+      - path: yq
+        githubRelease:
+          slug: mikefarah/yq
+          tagSelection:
+            semver:
+              constraints: #@ getVersion("yq")
+          assetNames:
+            #@ if os == "windows":
+            - #@ "yq_" + os + "_" + arch + ".exe"
+            #@ else:
+            - #@ "yq_" + os + "_" + arch
+            #@ end
+          disableAutoChecksumValidation: true
+      - path: kn
+        githubRelease:
+          slug: knative/client
+          #@ if data.values.vendir.getLatest:
+          latest: true
+          #@ else:
+          tag: #@ "knative-v" + getVersion("kn")
+          #@ end
+          assetNames:
+            #@ if os == "windows":
+            - #@ "kn-" + os + "-" + arch + ".exe"
+            #@ else:
+            - #@ "kn-" + os + "-" + arch
+            #@ end
+          disableAutoChecksumValidation: true
+      - path: kp
+        githubRelease:
+          slug: vmware-tanzu/kpack-cli
+          tagSelection:
+            semver:
+              constraints: #@ getVersion("kp")
+          assetNames:
+            - #@ "kp-" + os + "-*"
+          disableAutoChecksumValidation: true
+      - path: kubectl
+        http:
+          #@ if os == "windows":
+          url: #@ "https://dl.k8s.io/release/v" + getFixedVersion("kubectl") + "/bin/" + os + "/" + arch + "/kubectl.exe"
+          #@ else:
+          url: #@ "https://dl.k8s.io/release/v" + getFixedVersion("kubectl") + "/bin/" + os + "/" + arch + "/kubectl"
+          #@ end
+      - path: standalone
+        http:
+          #@ if os == "darwin":
+          url: #@ "https://storage.googleapis.com/tce-tanzu-cli-plugins/build-tools/standalone/mac/tanzu-standalone"
+          #@ elif os == "linux":
+          url: #@ "https://storage.googleapis.com/tce-tanzu-cli-plugins/build-tools/standalone/linux/tanzu-standalone"
+          #@ else:
+          url: #@ "https://storage.googleapis.com/tce-tanzu-cli-plugins/build-tools/standalone/windows/tanzu-standalone.exe"
+          #@ end
+  #! TCE
+  - path: vendir/binaries-tce
+    contents:
+    - path: .
+      githubRelease:
+        slug: vmware-tanzu/community-edition
+        tagSelection:
+          semver:
+            constraints: #@ getVersion("tce")
+        assetNames:
+          - #@ "tce-" + os + "-" + arch + "-v*.tar.gz"
+        disableAutoChecksumValidation: true
