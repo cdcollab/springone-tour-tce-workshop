@@ -11,6 +11,19 @@ This workshop walks you through:
    3. Harbor - to store and scan container images
    4. Knative Serving - to run the application 
 
+## Pre-requisites
+
+- Docker
+- vendir
+
+OR
+
+- Docker
+- kubectl
+- ytt
+- tanzu
+- kp
+
 ## Setup
 
 1. Clone the sample repository and `cd` into the parent directory. The rest of the instructions assume you are running commands from this directory.
