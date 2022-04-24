@@ -47,6 +47,8 @@ export IMAGE_PREFIX=harbor.tanzu.coraiberkleid.site/your-username/
 ./vendir/tce-darwin-amd64-v0.11.0/install.sh
 # verify version v0.11.2
 tanzu version
+# Install apps plugin
+tanzu plugin install apps --local ./apps-plugin --version v0.6.0
 # Optional Cleanup Steps
 docker kill $(docker ps -q)
 docker system prune -a --volumes
