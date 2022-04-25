@@ -20,6 +20,11 @@ This workshop walks you through:
 ## Setup
 The instructor will provide a unique username and password to each workshop participant. Once you have your assigned username and password, replace "your-username" and "your-password" in the values below, and set the following environment variables.
 
+Clone the repo to your VM:
+```shell
+git clone https://github.com/cdcollab/springone-tour-tce-workshop
+```
+
 Set the following for downloading CLI tools with `vendir`
 ```shell
 export VENDIR_GITHUB_API_TOKEN=your-personal-access-token 
@@ -44,14 +49,11 @@ export IMAGE_PREFIX=harbor.tanzu.coraiberkleid.site/your-username/
 # vendir workshop assets
 ./download-dependencies.sh
 # install tce
-./vendir/tce-darwin-amd64-v0.11.0/install.sh
+./vendir/tce-linux-amd64-v0.11.0/install.sh
 # verify version v0.11.2
 tanzu version
-# Install apps plugin
-tanzu plugin install apps --local ./apps-plugin --version v0.6.0
-# Optional Cleanup Steps
-docker kill $(docker ps -q)
-docker system prune -a --volumes
+# Install apps plugin :: https://github.com/vmware-tanzu/apps-cli-plugin#getting-started
+tanzu plugin install apps --local ./vendir --version v0.6.0
 # Create unmanaged cluster for workshop 6GB ram, 4cpu, 15gb disk
 tanzu uc create spring-one-tour -p 80:80 -p 443:443
 # Verify cni has completed install (Status Reconcile succeeded)

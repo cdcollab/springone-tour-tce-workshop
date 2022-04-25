@@ -16,5 +16,4 @@ kpack:
   kp_default_repository_password: $KP_PASSWORD
 
 excluded_packages:
-  - contour.community.tanzu.vmware.com
-  - cert-manager.community.tanzu.vmware.com
+  - knative-serving.community.tanzu.vmware.com
