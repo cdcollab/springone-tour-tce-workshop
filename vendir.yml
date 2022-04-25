@@ -95,3 +95,14 @@ directories:
         assetNames:
           - #@ "tce-" + os + "-" + arch + "-v*.tar.gz"
         disableAutoChecksumValidation: true
+  - path: vendir/binaries-tce
+    contents:
+    - path: .
+      githubRelease:
+        slug: vmware-tanzu/apps-cli-plugin
+        tagSelection:
+          semver:
+            constraints: #@ getVersion("tce-apps-plugin")
+        assetNames:
+          - #@ "tanzu-apps-plugin-" + os + "-" + arch + "-v*.tar.gz"
+        disableAutoChecksumValidation: true
