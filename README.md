@@ -5,7 +5,8 @@ This workshop walks you through:
 1. Installing prerequisites
 2. Creating a local cluster on Docker using Tanzu Community Edition
 3. Installing Application Toolkit on the cluster
-4. Running an example Software Supply Chain using Cartographer to move a developer workload from source to deployment. The chain uses:
+4. Running an example software supply chain using Cartographer to move a developer workload from source to deployment.
+  The chain uses:
    1. Fluxcd - to poll for new source code commits 
    2. kpack - to build and publish container images
    3. Harbor - to store and scan container images
@@ -15,34 +16,43 @@ This workshop walks you through:
 
 - Docker
 - vendir
+- kapp
+- krew
+- kubectl tree plugin (EXPLAIN)
 
 OR
 
 - Docker
 - kubectl
+- krew
+- kubectl tree plugin (EXPLAIN)
 - ytt
+- kapp
 - tanzu
 - kp
 
 ## Setup
 
-1. Clone the sample repository and `cd` into the parent directory. The rest of the instructions assume you are running commands from this directory.
+1. Clone the sample repository and `cd` into the parent directory.
+The rest of the instructions assume you are running commands from this directory.
 ```shell
 git clone https://github.com/cdcollab/springone-tour-tce-workshop.git
 cd springone-tour-tce-workshop
 ```
 
-2. The instructor will provide you with credentials (username and password) for Harbor container registry. Make sure you can log into Harbor at [https://harbor.tanzu.coraiberkleid.site](https://harbor.tanzu.coraiberkleid.site) using these credentials.
+2. The instructor will provide you with credentials (username and password) for Harbor container registry.
+Make sure you can log into Harbor at [https://harbor.tanzu.coraiberkleid.site](https://harbor.tanzu.coraiberkleid.site) using these credentials.
 
 
-3. Set the following environment variables. Note that you need to replace "your-username" and "your-password" in the code blocks below using your assigned Harbor credentials before running the commands.
+3. Set the following environment variables.
+Note that you need to replace "your-username" and "your-password" in the code blocks below using your assigned Harbor credentials before running the commands.
 ```shell
 # For installation of Application Toolkit
 export KP_REPO=harbor.tanzu.coraiberkleid.site/your-username/kp
 export KP_USERNAME=your-username
 export KP_PASSWORD=your-password
 
-# For the example Supply Chain:
+# For the example supply chain:
 export REGISTRY_URL=https://harbor.tanzu.coraiberkleid.site
 export REGISTRY_USERNAME=your-username
 export REGISTRY_PASSWORD=your-password
@@ -56,7 +66,8 @@ export IMAGE_PREFIX=harbor.tanzu.coraiberkleid.site/your-username/
 brew install vmware-tanzu/tanzu/tanzu-community-edition
 ```
 
-2. To initialize default `tanzu` CLI plugins, run the command that appears in the output of the CLI installation from the previous step (look inside the box formed by asterisks). The command should look something like this:
+2. To initialize default `tanzu` CLI plugins, run the command that appears in the output of the CLI installation from the previous step (look inside the box formed by asterisks).
+The command should look something like this:
 ```shell
 {INSTALL-LOCATION}/configure-tce.sh
 ```
@@ -72,7 +83,7 @@ tanzu plugin install apps --local ./apps-plugin --version v0.6.0
 
 ## Create a cluster
 
-1. Create a cluster on the local machine using Docker as the infrastructure provider.
+Create a cluster on the local machine using Docker as the infrastructure provider.
 ```shell
 tanzu unmanaged-cluster create tce-local -p 80:80 -p 443:443
 ```
@@ -105,9 +116,11 @@ Application Toolkit is a meta-package that contains 6 packages:
 |Knative Serving| knative-serving.community.tanzu.vmware.com          |
 |kpack| kpack.community.tanzu.vmware.com                    |
 
-Three of these packages require configuration. You can see the configuration here: [values-install-template.yaml](./values-install-template.yaml).
+Three of these packages require configuration.
+You can see the configuration here: [values-install-template.yaml](./values-install-template.yaml).
 
-Notice that the configuration file contains some of the environment variables you set earlier. Run the following command to create a final values file with the proper values in place of the variables:
+Notice that the configuration file contains some of the environment variables you set earlier.
+Run the following command to create a final values file with the proper values in place of the variables:
 ```shell
 envsubst < values-install-template.yaml > values-install.yaml
 ```
@@ -130,12 +143,13 @@ In this section, you will create a basic workflow to move an application from so
 
 _get source (fluxcd) --> build image (kpack) --> run (knative serving)_
 
-You will automate the workflow using Cartographer to create a software _Supply Chain_.
+You will automate the workflow using Cartographer to create a software _supply chain_.
 
 
 ### Operator perspective, part 1: configure kpack builder
 
-kpack needs a _builder_ in order to turn application source code into OCI images. A builder is an image, compliant with [Cloud Native Buildpacks](buildpacks.io), that provides the base OS images necessary to build and run the application (the "stack"), as well as buildpacks to handle application compilation, dependencies, and other language-specific details (the "store").
+kpack needs a _builder_ in order to turn application source code into OCI images.
+A builder is an image, compliant with [Cloud Native Buildpacks](buildpacks.io), that provides the base OS images necessary to build and run the application (the "stack"), as well as buildpacks to handle application compilation, dependencies, and other language-specific details (the "store").
 
 You can create the stack, store, and builder using `kubectl` and YAML configuration, but in this example, we will use `kp`, the kpack CLI.
 
@@ -154,58 +168,120 @@ kp clusterstack save base --build-image paketobuildpacks/build:base-cnb --run-im
 kp clusterstore save default -b gcr.io/paketo-buildpacks/java -b gcr.io/paketo-buildpacks/go
 ```
 
-4. Create a ClusterBuilder. Notice that it uses a configuration, [kpack-builder-order.yaml](example/kpack-builder-order.yaml), file to set the order in which buildpacks will evaluate the application code.
+4. Create a ClusterBuilder.
+Notice that it uses a configuration file, [kpack-builder-order.yaml](example/kpack-builder-order.yaml), to set the order in which buildpacks will evaluate the application code.
 ```shell
 kp clusterbuilder save builder --tag ${IMAGE_PREFIX}builder --stack base --store default --order example/kpack-builder-order.yaml
 ```
 
-Check the Harbor UI. You will see 4 images under the path `your-username/kp`—these correspond to the build image and the run image in the stack, as well as the go and java buildpacks in the store. You will also see the builder image under the path `cloud-native-crew/builder`. This builder includes the stack and store, and it is the image that kpack will use to build images from application source code.
+Check the [Harbor UI](https://harbor.tanzu.coraiberkleid.site).
+You will see 4 images under the path `your-username/kp`—these correspond to the build image and the run image in the stack, as well as the go and java buildpacks in the store.
+You will also see the builder image under the path `your-username/builder`.
+This builder includes the stack and store, and it is the image that kpack will use to build images from application source code.
 
-## Operator perspective, part 2: configure Cartographer rbac and supply chain
+## Operator perspective, part 2: configure Cartographer RBAC
 
+The supply chain will require read/write access to Harbor and to various cluster resources needed to process the workflow.
+Hence, you need to create proper role-based access control (RBAC) resources first.
+Take a look at the RBAC configuration provided in the example: [./example/cluster](./example/cluster).
+In this example, the default service account will be granted permission to create the necessary cluster resources, and a separate service account will be used to protect Harbor credentials separately.
+
+Run the following command to apply the RBAC configuration to the cluster.
 ```shell
 envsubst < values-example-template.yaml > values-example.yaml
 kapp deploy --yes -a example-rbac -f <(ytt --ignore-unknown-comments -f example/cluster/ -f values-example.yaml)
+```
+
+## Operator perspective, part 3: create Cartographer templates and supply chain
+
+Cartographer will automate the flow of applications from source code to deployment using Cartographer-specific resources.
+In this example, you will use:
+- **ClusterSupplyChain** - to define the sequence of the flow from FluxCD to kpack to Knative Serving, and to map output of one resource as input to the next
+- **Templates (ClusterSourceTemplate, ClusterImageTemplate, and ClusterTemplate)** - to give Cartographer the ability to instantiate and monitor FluxCD, kpack, and Knative Serving resources for each application submitted to the supply chain
+
+Review the templates and the supply chain defined in [./example/app-operator](./example/app-operator).
+Notice that:
+- Each template contains a parameterized configuration for one of the resources in the example workflow (FluxCD GitRepository, kpack Image, and Knative Serving Service).
+- The parameterized values will be injected from a "workload"—this refers to the resource the developer will submit with application-specific details
+- Templates differ based on the outputs they produce:
+  - ClusterSourceTemplate produces a url and revision
+  - ClusterImageTemplate produces an image (tag)
+  - ClusterTemplate does not produce any output
+- The template configuration does not set the output value; rather, it sets the path to the output value in the corresponding resource's status (e.g. urlPath, not url).
+  Cartographer will take care of retrieving this value and assigning it to the output field.
+- The ClusterSupplyChain defines the order of the resources and maps the ouput of one as input to the next.
+- The templates (specifically ClusterSourceTemplate for the kpack Image and ClusterTemplate for Knative Serving Service) assign specific output values to keys in the resource configuration.
+
+Run the following command to apply the template and supply chain configurations to the cluster.
+```shell
 kapp deploy --yes -a example-sc -f <(ytt --ignore-unknown-comments -f example/app-operator/ -f values-example.yaml)
 ```
 
 ## Developer perspective: create workload
 
+With the supply chain fully configured in the cluster, developers can begin to deploy applications using the Cartographer Workload resource. Workloads help provide a clean separation of concerns beteen developers and application operators and focus on isolating the information unique to a developer workload.
+
+You can create Workloads imperatively using the `tanzu` CLI, or declaraitvely using `kubectl` and YAML configuration.
+In this example, you will use the imperative approach.
+Run the following command to create a Workload.
+Notice that the "type" (web) matches the selector value in the ClusterSupplyChain.
 ```shell
-tanzu apps workload create hello-crew --type web --git-repo https://github.com/ciberkleid/hello-go.git --git-branch main --app cloud-native-crew --env "HELLO_MSG=crew" --yes
+tanzu apps workload create hello-chicago --type web --git-repo https://github.com/ciberkleid/hello-go.git --git-branch main --app hello-chicago --env "HELLO_MSG=crew" --yes
 ```
 
+> Note:
+> The supply chain will likely take a few minutes to deploy the application the first time, as kpack needs to download dependencies to build and publish the image.
+> Subsequent runs will leverage cached dependencies and other optimizations to build the image more quickly.
+
+Track the progress of the supply chain workflow.
 ```shell
-tanzu apps workload get hello-crew        # Alt: kubectl get workload hello-crew -o yaml | yq
+tanzu apps workload get hello-chicago        # Alt: kubectl get workload hello-chicago -o yaml | yq
 ```
 
+If the build is still running, you can optionally use the kpack CLI, `kp`, to check the progress of the build.
 ```shell
-kp build logs hello-crew        # Also: tanzu apps workload tail hello-crew
+kp build logs hello-chicago        # Also: tanzu apps workload tail hello-chicago
 ```
 
+You can use the `kubectl tree` plugin to see the dependent resources spawned for the Workload.
+You should see an App, Image, and GitRepository. The latter two will each have dependent resources as well.
 ```shell
-kubectl tree workload hello-crew
+kubectl tree workload hello-chicago
 ```
 
+If the Workload status is "Ready," you can check on the Knative Serving Service resource.
 ```shell
-kubectl tree kservice hello-crew
+kubectl get kservice hello-chicago
 ```
 
+Click on the route to make sure the application is working:
 ```shell
-kubectl get kservice hello-crew
+open http://hello-chicago.default.127-0-0-1.sslip.io
 ```
 
-Click on route:
+To learn more about the resource Knative Serving creates automatically, run `kubectl get all` or use the `kubectl tree` plugin as follows.
+Knative Serving provides additional functionality (e.g. auto-scaling, ingress configuration and routing, revision management) over and above a simple Deployment and Service, without requiring complex configuration.
 ```shell
-open http://hello-crew.default.127-0-0-1.sslip.io
+kubectl tree kservice hello-chicago
 ```
+
+## Conclusion
+
+Congratulations! You have installed a Kubernetes cluster with elevated developer-centric platform capabilities and deployed a path to production for a variety of applications!
+
+To learn more, visit the following resources:
+- [Tanzu Community Edition](https://tanzucommunityedition.io)
+- [Application Toolkit](https://tanzucommunityedition.io/docs/v0.11/package-readme-app-toolkit-0.1.0)
+- [Cartographer](https://cartographer.sh)
+- [Cartographer examples](https://github.com/vmware-tanzu/cartographer/tree/main/examples)
+- [FluxCD Source Controller](https://fluxcd.io/docs/components/source)
+- [Cloud Native Buildpacks](https://buildpacks.io)
+- [kpack](https://github.com/pivotal/kpack)
+- [Knative Serving](https://knative.dev/docs/serving)
 
 ## Cleanup
+
+To delete the cluster, run:
 ```shell
 tanzu unmanaged-cluster delete tce-local
 ```
-
-# Reference
-https://tanzucommunityedition.io
-https://tanzucommunityedition.io/docs/v0.11/package-readme-app-toolkit-0.1.0
-https://tanzucommunityedition.io/docs/v0.11/getting-started-unmanaged
