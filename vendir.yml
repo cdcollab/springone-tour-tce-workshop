@@ -95,7 +95,7 @@ directories:
         assetNames:
           - #@ "tce-" + os + "-" + arch + "-v*.tar.gz"
         disableAutoChecksumValidation: true
-  - path: vendir/binaries-tce
+  - path: vendir/binaries-tce-app-plugin
     contents:
     - path: .
       githubRelease:
