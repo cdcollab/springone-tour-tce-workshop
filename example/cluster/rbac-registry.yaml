@@ -27,6 +27,18 @@ imagePullSecrets:
 #@ end
 ---
 apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kapp-permissions
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kapp-permissions
+subjects:
+  - kind: ServiceAccount
+    name: example-supply-chain-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: kapp-permissions
@@ -50,15 +62,3 @@ rules:
       - httpproxies
     verbs:
       - '*'
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: kapp-permissions
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: kapp-permissions
-subjects:
-  - kind: ServiceAccount
-    name: example-supply-chain-sa
