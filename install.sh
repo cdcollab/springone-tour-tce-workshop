@@ -5,10 +5,9 @@ if [[ -z ${KP_REPO} || -z ${KP_USERNAME} || -z ${KP_PASSWORD} ]]; then
   exit 1
 fi
 
-envsubst < values-install-template.yaml > values-install.yaml
-
 ##### INSTALL APPLICATION TOOLKIT
-tanzu package install app-toolkit \
+      tanzu package install app-toolkit \
       --package-name app-toolkit.community.tanzu.vmware.com \
-      --version 0.1.0 -f values-install.yaml \
-      -n tanzu-package-repo-global
+      --version 0.1.0 \
+      -n tanzu-package-repo-global \
+      -f <(envsubst < values-install-template.yaml)

@@ -1,0 +1,25 @@
+# os: darwin, linux, windows
+export HOST_OS=darwin
+# arch: amd64, arm64
+export HOST_ARCH=amd64
+
+export PATH=./vendir/bin:$PATH
+
+export VENDIR_GITHUB_API_TOKEN=xxxxx
+
+export KP_REPO=https://index.docker.io/v1/
+export KP_USERNAME=xxx
+export KP_PASSWORD=xxx
+
+export REGISTRY_URL=docker.io
+export REGISTRY_USERNAME=xxx
+export REGISTRY_PASSWORD=xxx
+export IMAGE_PREFIX=docker.io/dashaun/
+
+export AZURE_SUBSCRIPTION_ID=xxx
+
+export AZURE_TENANT_ID=xxx
+
+export AZURE_CLIENT_ID=xxx
+export AZURE_CLIENT_SECRET_ID=xxx
+export AZURE_CLIENT_SECRET=xxx

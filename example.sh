@@ -9,6 +9,9 @@ fi
 # Log in to docker locally
 echo $REGISTRY_PASSWORD | docker login -u ${REGISTRY_USERNAME} --password-stdin ${REGISTRY_URL}
 
+#### KP default repository
+kp config default-repository ${REGISTRY_URL}
+
 # kpack configuration: create a stack, store and builder for kpack
 kp clusterstack save base \
     --build-image paketobuildpacks/build:base-cnb \

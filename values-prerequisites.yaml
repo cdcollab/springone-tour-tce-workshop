@@ -2,9 +2,9 @@ vendir:
   # For installation of CLI binaries
   host:
     # os: darwin, linux, windows
-    os: "darwin"
+    os: $HOST_OS
     # arch: amd64, arm64
-    arch: "amd64"
+    arch: $HOST_ARCH
   # getLatest overrides declared versions (disable using getLatest: "")
   getLatest: ""
   versions:

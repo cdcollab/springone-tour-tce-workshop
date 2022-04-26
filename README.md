@@ -12,32 +12,20 @@ This workshop walks you through:
    3. Harbor - to store and scan container images
    4. Knative Serving - to run the application 
 
-## Pre-requisites
+## Prerequisites
 
-- Docker
-- vendir
-- kapp
-- krew
-- kubectl tree plugin (EXPLAIN)
+- `docker` must be installed
+- `carvel` must be installed
+  - `ytt`, `vendir`, `kapp`
+- `krew`
+- `kubectl tree` plugin
 
-OR
-
-- Docker
-- kubectl
-- krew
-- kubectl tree plugin (EXPLAIN)
-- ytt
-- kapp
-- tanzu
-- kp
 
 ## Setup
 
-1. Clone the sample repository and `cd` into the parent directory.
-The rest of the instructions assume you are running commands from this directory.
+Clone the repo to your VM:
 ```shell
-git clone https://github.com/cdcollab/springone-tour-tce-workshop.git
-cd springone-tour-tce-workshop
+git clone https://github.com/cdcollab/springone-tour-tce-workshop
 ```
 
 2. The instructor will provide you with credentials (username and password) for Harbor container registry.
@@ -46,6 +34,7 @@ Make sure you can log into Harbor at [https://harbor.tanzu.coraiberkleid.site](h
 
 3. Set the following environment variables.
 Note that you need to replace "your-username" and "your-password" in the code blocks below using your assigned Harbor credentials before running the commands.
+
 ```shell
 # For installation of Application Toolkit
 export KP_REPO=harbor.tanzu.coraiberkleid.site/your-username/kp
@@ -59,49 +48,56 @@ export REGISTRY_PASSWORD=your-password
 export IMAGE_PREFIX=harbor.tanzu.coraiberkleid.site/your-username/
 ```
 
-## Install Tanzu Community Edition CLI
 
-1. Run the following command to install the `tanzu` CLI.
 ```shell
-brew install vmware-tanzu/tanzu/tanzu-community-edition
+# vendir workshop assets
+./download-dependencies.sh
+# install tce
+./vendir/tce-linux-amd64-v0.11.0/install.sh
+# verify version v0.11.2
+tanzu version
+# Install apps plugin :: https://github.com/vmware-tanzu/apps-cli-plugin#getting-started
+tanzu plugin install apps --local ./vendir --version v0.6.0
+# Create unmanaged cluster for workshop 6GB ram, 4cpu, 15gb disk
+tanzu uc create spring-one-tour -p 80:80 -p 443:443
 ```
 
-2. To initialize default `tanzu` CLI plugins, run the command that appears in the output of the CLI installation from the previous step (look inside the box formed by asterisks).
-The command should look something like this:
-```shell
-{INSTALL-LOCATION}/configure-tce.sh
-```
-
-3. To install the additional `apps` plugin, run the following commands.
-```shell
-wget -P apps-plugin https://github.com/vmware-tanzu/apps-cli-plugin/releases/download/v0.6.0/tanzu-apps-plugin-darwin-amd64-v0.6.0.tar.gz
-cd apps-plugin
-tar -xvf  tanzu-apps-plugin-darwin-amd64-v0.6.0.tar.gz
-cd ..
-tanzu plugin install apps --local ./apps-plugin --version v0.6.0
-```
-
-## Create a cluster
-
-Create a cluster on the local machine using Docker as the infrastructure provider.
-```shell
-tanzu unmanaged-cluster create tce-local -p 80:80 -p 443:443
-```
 
 You can look through the output to get a better sense for the components included in the cluster, namely:
 - Package repositories, for simple installation of a curated set of Kubernetes OSS tooling
 - kapp-controller, for package lifecycle management
 - Calico Container Network Interface (CNI) for container and pod networking
 
-When the cluster has been created, you can list the package repositories in all namespaces.
 ```shell
-tanzu package repository list -A
+# When the cluster has been created, you can list the package repositories in all namespaces.
+# Verify cni has completed install (Status Reconcile succeeded)
+tanzu package installed list -A
 ```
 
 You can also list the available packages in the `tanzu-package-repo-global` namespace (no need to specify this namespace).
 ```shell
 tanzu package available list
 ```
+
+```shell
+# Install app-toolkit
+./install.sh
+```
+
+## Development
+
+```shell
+dashaun@kaikaku:~/fun/cdcollab/springone-tour-tce-workshop$ git push --set-upstream origin dashaun-dev
+Total 0 (delta 0), reused 0 (delta 0), pack-reused 0
+remote: 
+remote: Create a pull request for 'dashaun-dev' on GitHub by visiting:
+remote:      https://github.com/cdcollab/springone-tour-tce-workshop/pull/new/dashaun-dev
+remote: 
+To github.com:cdcollab/springone-tour-tce-workshop.git
+ * [new branch]      dashaun-dev -> dashaun-dev
+Branch 'dashaun-dev' set up to track remote branch 'dashaun-dev' from 'origin'.
+```
+
 
 ## Install Application Toolkit
 
