@@ -75,13 +75,17 @@ tanzu uc create spring-one-tour -p 80:80 -p 443:443
 - Calico Container Network Interface (CNI) for container and pod networking
 
 3. When the cluster has been created, you can list the package repositories in all namespaces.
-Verify cni has completed install (Status Reconcile succeeded).
+```shell
+tanzu package repository list -A
+```
+
+5. You can also check for packages that have been installed. If the status of the `cni` package is `Reconciling`, wait a few moments and run this command again until the status is `Reconcile succeeded`.
 
 ```shell
 tanzu package installed list -A
 ```
 
-4. You can also list the available packages in the `tanzu-package-repo-global` namespace (no need to specify this namespace).
+4. You can also list other available packages in the `tanzu-package-repo-global` namespace (no need to specify this namespace).
 ```shell
 tanzu package available list
 ```
