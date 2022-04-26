@@ -79,13 +79,13 @@ tanzu uc create spring-one-tour -p 80:80 -p 443:443
 tanzu package repository list -A
 ```
 
-5. You can also check for packages that have been installed. If the status of the `cni` package is `Reconciling`, wait a few moments and run this command again until the status is `Reconcile succeeded`.
+4. You can also check for packages that have been installed. If the status of the `cni` package is `Reconciling`, wait a few moments and run this command again until the status is `Reconcile succeeded`.
 
 ```shell
 tanzu package installed list -A
 ```
 
-4. You can also list other available packages in the `tanzu-package-repo-global` namespace (no need to specify this namespace).
+5. You can also list other available packages in the `tanzu-package-repo-global` namespace (no need to specify this namespace).
 ```shell
 tanzu package available list
 ```
