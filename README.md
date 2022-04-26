@@ -298,5 +298,5 @@ To learn more, visit the following resources:
 
 To delete the cluster, run:
 ```shell
-tanzu unmanaged-cluster delete tce-local
+tanzu unmanaged-cluster delete spring-one-tour
 ```
