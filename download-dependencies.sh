@@ -19,3 +19,5 @@ rm -rf vendir/binaries
 chmod +x vendir/bin/*
 tar -xzvf vendir/binaries-tce/*.tar.gz -C vendir
 tar -xvzf vendir/binaries-tce-app-plugin/*.tar.gz -C vendir
+krew install krew
+kubectl krew install tree
