@@ -12,76 +12,78 @@ This workshop walks you through:
    3. Harbor - to store and scan container images
    4. Knative Serving - to run the application 
 
-## Prerequisites
+## Environment
 
-- `docker` must be installed
-- `carvel` must be installed
-  - `ytt`, `vendir`, `kapp`
-- `krew`
-- `kubectl tree` plugin
+The instructor will provide you with details to log into a VM where you will complete the workshop.
 
+The VM already has the necessary pre-requisites installed, namely:
 
-## Setup
+1. Binaries:
+   - `docker`
+   - carvel suite, specifically:
+     - `vendir`
+     - `ytt`
+     - `kapp`
+<br><br>
+2. A clone of this repo in `$HOME/workshop`
+   <br><br>
+3. Environment variables with credentials for Harbor registry
 
-Clone the repo to your VM:
+## Install additional dependencies
+
+1. Change into the directory where this repository is cloned.
 ```shell
-git clone https://github.com/cdcollab/springone-tour-tce-workshop
+cd $HOME/workshop
 ```
 
-2. The instructor will provide you with credentials (username and password) for Harbor container registry.
-Make sure you can log into Harbor at [https://harbor.tanzu.coraiberkleid.site](https://harbor.tanzu.coraiberkleid.site) using these credentials.
-
-
-3. Set the following environment variables.
-Note that you need to replace "your-username" and "your-password" in the code blocks below using your assigned Harbor credentials before running the commands.
-
+2. Run the following script to install additional dependencies.
+> Note: This script uses Carvel's [vendir](https://carvel.dev/vendir/) tool to download the necessary files. You can see the configuration for the list of files to download in the [vendir.yml](./vendir.yml) configuration file.
 ```shell
-# For installation of Application Toolkit
-export KP_REPO=harbor.tanzu.coraiberkleid.site/your-username/kp
-export KP_USERNAME=your-username
-export KP_PASSWORD=your-password
-
-# For the example supply chain:
-export REGISTRY_URL=https://harbor.tanzu.coraiberkleid.site
-export REGISTRY_USERNAME=your-username
-export REGISTRY_PASSWORD=your-password
-export IMAGE_PREFIX=harbor.tanzu.coraiberkleid.site/your-username/
-```
-
-
-```shell
-# vendir workshop assets
 ./download-dependencies.sh
-# install tce
+```
+
+3. One of the dependencies that was downloaded is the [Tanzu Community Edition CLI release file](https://tanzucommunityedition.io/download). Run the following command to complete the installation of the CLI.
+```shell
 ./vendir/tce-linux-amd64-v0.11.0/install.sh
-# verify version v0.11.2
+```
+
+4. The Tanzu Community Edition CLI is called `tanzu`. Make sure it's properly installed by checking the version.
+```shell
 tanzu version
-# Install apps plugin :: https://github.com/vmware-tanzu/apps-cli-plugin#getting-started
+```
+
+5. Install the [apps plugin](https://github.com/vmware-tanzu/apps-cli-plugin#getting-started) for the `tanzu` CLI
+```shell
 tanzu plugin install apps --local ./vendir --version v0.6.0
-# Create unmanaged cluster for workshop 6GB ram, 4cpu, 15gb disk
+```
+
+## Create a cluster
+
+1. Create an "unmanaged" Tanzu Community Edition Kubernetes cluster.
+```shell
 tanzu uc create spring-one-tour -p 80:80 -p 443:443
 ```
 
-
-You can look through the output to get a better sense for the components included in the cluster, namely:
+2. You can look through the output to get a better sense for the components included in the cluster, namely:
 - Package repositories, for simple installation of a curated set of Kubernetes OSS tooling
 - kapp-controller, for package lifecycle management
 - Calico Container Network Interface (CNI) for container and pod networking
 
+3. When the cluster has been created, you can list the package repositories in all namespaces.
+Verify cni has completed install (Status Reconcile succeeded).
+
 ```shell
-# When the cluster has been created, you can list the package repositories in all namespaces.
-# Verify cni has completed install (Status Reconcile succeeded)
 tanzu package installed list -A
 ```
 
-You can also list the available packages in the `tanzu-package-repo-global` namespace (no need to specify this namespace).
+4. You can also list the available packages in the `tanzu-package-repo-global` namespace (no need to specify this namespace).
 ```shell
 tanzu package available list
 ```
 
 ## Install Application Toolkit
 
-Application Toolkit is a meta-package that contains 6 packages:
+1. Application Toolkit is a meta-package that contains 6 packages:
 
 | Name | Package                                             |
 |--------------|-----------------------------------------------------|
@@ -95,20 +97,24 @@ Application Toolkit is a meta-package that contains 6 packages:
 Three of these packages require configuration.
 You can see the configuration here: [values-install-template.yaml](./values-install-template.yaml).
 
-Notice that the configuration file contains some of the environment variables you set earlier.
-Run the following command to create a final values file with the proper values in place of the variables:
+2. Notice that the configuration file contains several environment variables. These have been pre-set on your VM. Check them using the following command.
+```shell
+env | grep "KP_"
+```
+
+3. Run the following command to create a final values file with the proper values in place of the variables:
 ```shell
 envsubst < values-install-template.yaml > values-install.yaml
 ```
 
-Make sure the new [values-install.yaml](./values-install.yaml) contains the proper replacement values.
+4. Make sure the new [values-install.yaml](./values-install.yaml) contains the proper replacement values.
 
-Then, install Application Toolkit.
+5. Install Application Toolkit.
 ```shell
 tanzu package install app-toolkit --package-name app-toolkit.community.tanzu.vmware.com --version 0.1.0 -f values-install.yaml -n tanzu-package-repo-global
 ```
 
-When the installation is complete, verify that all packages were installed and that their status is "Reconcile succeeded."
+6. When the installation is complete, verify that all packages were installed and that their status is "Reconcile succeeded."
 ```shell
 tanzu package installed list -n tanzu-package-repo-global
 ```
@@ -129,9 +135,10 @@ A builder is an image, compliant with [Cloud Native Buildpacks](buildpacks.io), 
 
 You can create the stack, store, and builder using `kubectl` and YAML configuration, but in this example, we will use `kp`, the kpack CLI.
 
+
 1. Log in to Harbor using the `docker `CLI so that `kp` has access to Harbor credentials.
 ```shell
-echo $REGISTRY_PASSWORD | docker login -u ${REGISTRY_USERNAME} --password-stdin ${REGISTRY_URL}
+echo $KP_PASSWORD | docker login -u ${KP_USERNAME} --password-stdin https://harbor.tanzu.coraiberkleid.site
 ```
 
 2. Create the ClusterStack.
@@ -150,17 +157,26 @@ Notice that it uses a configuration file, [kpack-builder-order.yaml](example/kpa
 kp clusterbuilder save builder --tag ${IMAGE_PREFIX}builder --stack base --store default --order example/kpack-builder-order.yaml
 ```
 
-Check the [Harbor UI](https://harbor.tanzu.coraiberkleid.site).
+5. Check the [Harbor UI](https://harbor.tanzu.coraiberkleid.site). Log in using the same credentials (`env | grep "KP_"`).
+
 You will see 4 images under the path `your-username/kp`—these correspond to the build image and the run image in the stack, as well as the go and java buildpacks in the store.
 You will also see the builder image under the path `your-username/builder`.
 This builder includes the stack and store, and it is the image that kpack will use to build images from application source code.
 
 ## Operator perspective, part 2: configure Cartographer RBAC
 
-The supply chain will require read/write access to Harbor and to various cluster resources needed to process the workflow.
+The Cartographer supply chain will require read/write access to Harbor and to various cluster resources needed to process the workflow.
 Hence, you need to create proper role-based access control (RBAC) resources first.
 Take a look at the RBAC configuration provided in the example: [./example/cluster](./example/cluster).
 In this example, the default service account will be granted permission to create the necessary cluster resources, and a separate service account will be used to protect Harbor credentials separately.
+
+This configuration will retrieve credentials from a different set of environment variables.
+Check them using the following commands.
+```shell
+# For the example supply chain:
+env | grep "REGISTRY_"
+env | grep "IMAGE_PREFIX"
+```
 
 Run the following command to apply the RBAC configuration to the cluster.
 ```shell
