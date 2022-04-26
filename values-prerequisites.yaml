@@ -14,3 +14,4 @@ vendir:
     tce: 0.11.0
     tce-apps-plugin: 0.6.0
     yq: 4.24.5
+    krew: 0.4.3

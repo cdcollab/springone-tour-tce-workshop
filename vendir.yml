@@ -39,6 +39,15 @@ directories:
   #! Binaries
   - path: vendir/binaries
     contents:
+      - path: krew
+        githubRelease:
+          slug: kubernetes-sigs/krew
+          tagSelection:
+            semver:
+              constraints: #@ getVersion("krew")
+          assetNames:
+            - #@ "krew-" + os + "_" + arch + ".tar.gz"
+          disableAutoChecksumValidation: true
       - path: yq
         githubRelease:
           slug: mikefarah/yq
