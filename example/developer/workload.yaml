@@ -5,7 +5,7 @@ metadata:
   labels:
     apps.tanzu.vmware.com/workload-type: web
 spec:
-  serviceAccountName: example-workload-sa
+  serviceAccountName: default
   source:
     git:
       url: https://github.com/ciberkleid/hello-go

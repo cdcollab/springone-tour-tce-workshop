@@ -4,3 +4,4 @@ values-install.yaml
 values-example.yaml
 vendir
 vendir.lock.yml
+apps-plugin/

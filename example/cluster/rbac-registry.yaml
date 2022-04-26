@@ -18,10 +18,47 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: example-registry-creds-sa
+  name: example-supply-chain-sa
 #@ if data.values.registry.password != "":
 secrets:
   - name: registry-credentials
 imagePullSecrets:
   - name: registry-credentials
 #@ end
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kapp-permissions
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kapp-permissions
+subjects:
+  - kind: ServiceAccount
+    name: example-supply-chain-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kapp-permissions
+rules:
+  - apiGroups:
+      - serving.knative.dev
+    resources: ['services']
+    verbs: ['*']
+  - apiGroups: [""]
+    resources: ['configmaps', 'services']
+    verbs: ['*']
+  - apiGroups:
+      - apps
+    resources:
+      - deployments
+    verbs:
+      - '*'
+  - apiGroups:
+      - projectcontour.io
+    resources:
+      - httpproxies
+    verbs:
+      - '*'
