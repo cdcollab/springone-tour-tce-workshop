@@ -14,6 +14,3 @@ kpack:
   kp_default_repository: https://$KP_REPO
   kp_default_repository_username: $KP_USERNAME
   kp_default_repository_password: $KP_PASSWORD
-
-excluded_packages:
-  - knative-serving.community.tanzu.vmware.com
