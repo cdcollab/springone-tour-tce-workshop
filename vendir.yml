@@ -24,18 +24,6 @@ apiVersion: vendir.k14s.io/v1alpha1
 kind: Config
 minimumRequiredVersion: 0.8.0
 directories:
-  #! Product release files
-  - path: vendir/kpack
-    contents:
-      - path: .
-        githubRelease:
-          slug: pivotal/kpack
-          tagSelection:
-            semver:
-              constraints: #@ getVersion("kp")
-          assetNames:
-            - #@ "release-*.yaml"
-          disableAutoChecksumValidation: true
   #! Binaries
   - path: vendir/binaries
     contents:
