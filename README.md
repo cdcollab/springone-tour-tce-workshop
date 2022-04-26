@@ -58,6 +58,8 @@ tanzu plugin install apps --local ./vendir --version v0.6.0
 tanzu uc create spring-one-tour -p 80:80 -p 443:443
 # Verify cni has completed install (Status Reconcile succeeded)
 tanzu package installed list -A
+# Install app-toolkit
+./install.sh
 ```
 
 ## Development
