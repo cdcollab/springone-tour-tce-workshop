@@ -117,8 +117,11 @@ envsubst < values-install-template.yaml > values-install.yaml
 ```
 
 4. Make sure the new [values-install.yaml](./values-install.yaml) contains the proper replacement values.
+```shell
+cat cat values-install.yaml
+```
 
-5. Install Application Toolkit.
+6. Install Application Toolkit.
 ```shell
 tanzu package install app-toolkit --package-name app-toolkit.community.tanzu.vmware.com --version 0.1.0 -f values-install.yaml -n tanzu-package-repo-global
 ```
@@ -150,7 +153,9 @@ You can create the stack, store, and builder using `kubectl` and YAML configurat
 echo $KP_PASSWORD | docker login -u ${KP_USERNAME} --password-stdin https://harbor.tanzu.coraiberkleid.site
 ```
 
-2. Create the ClusterStack.
+2. Log into the Harbor UI using the same credentials. Verify that there are no images in your user project.
+
+4. Create the ClusterStack.
 ```shell
 kp clusterstack save base --build-image paketobuildpacks/build:base-cnb --run-image paketobuildpacks/run:base-cnb
 ```
@@ -190,6 +195,15 @@ env | grep "IMAGE_PREFIX"
 Run the following command to apply the RBAC configuration to the cluster.
 ```shell
 envsubst < values-example-template.yaml > values-example.yaml
+```
+
+Validate that the values have been properly substituted.
+```shell
+cat values-example.yaml
+```
+
+Apply the Cartographer RBAC configuration to the cluster.
+```shell
 kapp deploy --yes -a example-rbac -f <(ytt --ignore-unknown-comments -f example/cluster/ -f values-example.yaml)
 ```
 
