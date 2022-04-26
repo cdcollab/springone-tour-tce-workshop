@@ -269,9 +269,9 @@ If the Workload status is "Ready," you can check on the Knative Serving Service 
 kubectl get kservice hello-chicago
 ```
 
-Click on the route to make sure the application is working:
+Make sure the application is working:
 ```shell
-open http://hello-chicago.default.127-0-0-1.sslip.io
+curl http://hello-chicago.default.127-0-0-1.sslip.io
 ```
 
 To learn more about the resource Knative Serving creates automatically, run `kubectl get all` or use the `kubectl tree` plugin as follows.
