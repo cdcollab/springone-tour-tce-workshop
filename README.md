@@ -118,7 +118,7 @@ envsubst < values-install-template.yaml > values-install.yaml
 
 4. Make sure the new [values-install.yaml](./values-install.yaml) contains the proper replacement values.
 ```shell
-cat cat values-install.yaml
+cat values-install.yaml
 ```
 
 6. Install Application Toolkit.
