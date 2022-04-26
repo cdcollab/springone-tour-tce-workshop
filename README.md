@@ -16,7 +16,7 @@ This workshop walks you through:
 
 The instructor will provide you with details to log into a VM where you will complete the workshop.
 
-The VM already has the necessary pre-requisites installed, namely:
+The VM already has some pre-requisites installed:
 
 1. Binaries:
    - `docker`
@@ -36,8 +36,13 @@ The VM already has the necessary pre-requisites installed, namely:
 cd $HOME/workshop
 ```
 
-2. Run the following script to install additional dependencies.
-> Note: This script uses Carvel's [vendir](https://carvel.dev/vendir/) tool to download the necessary files. You can see the configuration for the list of files to download in the [vendir.yml](./vendir.yml) configuration file.
+2. Run the following script to install additional dependencies, namely:
+- `kubectl` (with `tree` plugin)
+- `yq` (for formatting YAML)
+- `kp` (kpack CLI)
+- `tanzu` and `tanzu apps` plugin installers
+
+> Note: This script uses Carvel's [vendir](https://carvel.dev/vendir/) tool to download the necessary files. You can also see the configuration for the list of files to download in the [vendir.yml](./vendir.yml) configuration file.
 ```shell
 ./download-dependencies.sh
 ```
