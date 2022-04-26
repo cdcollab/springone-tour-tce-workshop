@@ -8,13 +8,14 @@ ytt -f vendir.yml \
   --data-values-file <(envsubst < values-prerequisites.yaml) \
   | vendir sync -f-
 
+mkdir -p vendir/bin
+
 # Extract archive files
 tar -xvzf vendir/binaries/krew/*.tar.gz -C vendir/bin
 tar -xzvf vendir/binaries-tce/*.tar.gz -C vendir
 tar -xvzf vendir/binaries-tce-app-plugin/*.tar.gz -C vendir
 
 # Soft link binary files for consistency into path
-mkdir -p vendir/bin
 mv vendir/binaries/kn/kn* vendir/bin/kn
 mv vendir/binaries/kp/kp* vendir/bin/kp
 mv vendir/binaries/kubectl/kubectl* vendir/bin/kubectl
