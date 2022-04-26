@@ -79,26 +79,6 @@ You can also list the available packages in the `tanzu-package-repo-global` name
 tanzu package available list
 ```
 
-```shell
-# Install app-toolkit
-./install.sh
-```
-
-## Development
-
-```shell
-dashaun@kaikaku:~/fun/cdcollab/springone-tour-tce-workshop$ git push --set-upstream origin dashaun-dev
-Total 0 (delta 0), reused 0 (delta 0), pack-reused 0
-remote: 
-remote: Create a pull request for 'dashaun-dev' on GitHub by visiting:
-remote:      https://github.com/cdcollab/springone-tour-tce-workshop/pull/new/dashaun-dev
-remote: 
-To github.com:cdcollab/springone-tour-tce-workshop.git
- * [new branch]      dashaun-dev -> dashaun-dev
-Branch 'dashaun-dev' set up to track remote branch 'dashaun-dev' from 'origin'.
-```
-
-
 ## Install Application Toolkit
 
 Application Toolkit is a meta-package that contains 6 packages:
