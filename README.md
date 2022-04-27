@@ -108,7 +108,15 @@ You can see the configuration here: [values-install-template.yaml](./values-inst
 
 2. Notice that the configuration file contains several environment variables. These have been pre-set on your VM. Check them using the following command.
 ```shell
-env | grep "KP_"
+env | grep KP_
+```
+
+The output should look something like this:
+```shell
+$ env | grep KP_
+KP_USERNAME=user001
+KP_PASSWORD=some-password
+KP_REPO=harbor.tanzu.coraiberkleid.site/user001/kp
 ```
 
 3. Run the following command to create a final values file with the proper values in place of the variables:
@@ -171,7 +179,7 @@ Notice that it uses a configuration file, [kpack-builder-order.yaml](example/kpa
 kp clusterbuilder save builder --tag ${IMAGE_PREFIX}builder --stack base --store default --order example/kpack-builder-order.yaml
 ```
 
-5. Check the [Harbor UI](https://harbor.tanzu.coraiberkleid.site). Log in using the same credentials (`env | grep "KP_"`).
+5. Check the [Harbor UI](https://harbor.tanzu.coraiberkleid.site). Log in using the same credentials (`env | grep KP_`).
 
 You will see 4 images under the path `your-username/kp`—these correspond to the build image and the run image in the stack, as well as the go and java buildpacks in the store.
 You will also see the builder image under the path `your-username/builder`.
@@ -188,8 +196,20 @@ This configuration will retrieve credentials from a different set of environment
 Check them using the following commands.
 ```shell
 # For the example supply chain:
-env | grep "REGISTRY_"
-env | grep "IMAGE_PREFIX"
+env | grep REGISTRY_
+env | grep IMAGE_PREFIX
+```
+
+The output should look something like this:
+> Note: For the workshop, we are using the same registry credentials to create the builder with `kp` and for the supply chain service account to push/pull application images. However, you could choose to use different credentials to enforce more granular access controls.
+```shell
+$ env | grep REGISTRY_
+REGISTRY_URL=https://harbor.tanzu.coraiberkleid.site
+REGISTRY_USERNAME=user001
+REGISTRY_PASSWORD=some-password
+
+$ env | grep IMAGE_PREFIX
+IMAGE_PREFIX=harbor.tanzu.coraiberkleid.site/user001/
 ```
 
 Run the following command to apply the RBAC configuration to the cluster.
