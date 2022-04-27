@@ -241,7 +241,7 @@ In this example, you will use the imperative approach.
 Run the following command to create a Workload.
 Notice that the "type" (web) matches the selector value in the ClusterSupplyChain.
 ```shell
-tanzu apps workload create hello-chicago --type web --git-repo https://github.com/ciberkleid/hello-go.git --git-branch main --app hello-chicago --env "HELLO_MSG=crew" --yes
+tanzu apps workload create hello-chicago --type web --git-repo https://github.com/ciberkleid/hello-go.git --git-branch main --app hello-chicago --env "HELLO_MSG=chicago" --yes
 ```
 
 > Note:
