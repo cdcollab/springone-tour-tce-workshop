@@ -118,7 +118,7 @@ envsubst < values-install-template.yaml > values-install.yaml
 
 4. Make sure the new [values-install.yaml](./values-install.yaml) contains the proper replacement values.
 ```shell
-cat cat values-install.yaml
+cat values-install.yaml
 ```
 
 6. Install Application Toolkit.
@@ -269,9 +269,9 @@ If the Workload status is "Ready," you can check on the Knative Serving Service 
 kubectl get kservice hello-chicago
 ```
 
-Click on the route to make sure the application is working:
+Make sure the application is working:
 ```shell
-open http://hello-chicago.default.127-0-0-1.sslip.io
+curl http://hello-chicago.default.127-0-0-1.sslip.io
 ```
 
 To learn more about the resource Knative Serving creates automatically, run `kubectl get all` or use the `kubectl tree` plugin as follows.
@@ -298,5 +298,5 @@ To learn more, visit the following resources:
 
 To delete the cluster, run:
 ```shell
-tanzu unmanaged-cluster delete tce-local
+tanzu unmanaged-cluster delete spring-one-tour
 ```
